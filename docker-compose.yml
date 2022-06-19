@@ -1,0 +1,52 @@
+version: '3.7'
+
+services:
+  #Базовый образ для веб + php + ssh
+  apache-php:
+    build:
+      context: apache-php
+      args:
+        SSH_PASS: ${USER_PASSWORD:-password}
+        SSH_USER: ${USER_LOGIN:-login}
+    restart: always
+    container_name: ${USER_LOGIN:-login}_php
+    volumes:
+      - ./apache-php/html:/var/www/html
+      - ./apache-php/docker:/var/www/docker
+      - ./apache-php/docker/sshd_config:/etc/ssh/sshd_config
+    ports:
+       - ${SSH_PORT:-2222}:22
+
+  #Образ для базы данных mariadb  
+  mariadb:
+      image: mariadb
+      restart: always
+      environment: 
+          MYSQL_DATABASE: ${DB_NAME:-db}
+          MYSQL_ROOT_PASSWORD: ${USER_DB_PASSWORD:-password}
+          MYSQL_USER: ${USER_LOGIN:-login}
+          MYSQL_PASSWORD: ${USER_PASSWORD:-password}
+      container_name: ${USER_LOGIN:-container}_mariadb
+      volumes:
+          - ./mariadb:/var/lib/mysql
+
+  #Образ для phpmyadmin
+  phpmyadmin:
+      image: phpmyadmin/phpmyadmin
+      restart: always
+      container_name: ${USER_LOGIN:-container}_phpmyadmin
+      environment:
+      - PMA_HOST=mariadb
+      - PMA_ABSOLUTE_URI=http://localhost:8080/phpmyadmin
+      depends_on:
+          - mariadb
+
+  proxy:
+    build:
+      context: ./proxy
+      args:
+        SERVER_NAME: ${SERVER_NAME:-localhost}
+    container_name: ${USER_LOGIN:-container}_proxy
+    restart: always
+    ports:
+      - ${WEB_PORT:-8080}:80
