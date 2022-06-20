@@ -11,6 +11,7 @@ services:
     environment:
         - APACHE_RUN_USER=${USER_LOGIN:-login}
         - APACHE_RUN_GROUP=${USER_LOGIN:-login}
+        - LC_CDPATH=/var/www/html
     restart: always
     container_name: ${USER_LOGIN:-login}_php
     volumes:
@@ -44,12 +45,17 @@ services:
       depends_on:
           - mariadb
 
+  #Образ для проксирующего сервера
   proxy:
     build:
       context: ./proxy
       args:
-        SERVER_NAME: '${SERVER_NAME:-localhost}:${WEB_PORT:-8080}'
+        SERVER_NAME: ${SERVER_NAME:-localhost}
+        WEB_PORT: ${WEB_PORT:-8080}
     container_name: ${USER_LOGIN:-container}_proxy
     restart: always
     ports:
       - ${WEB_PORT:-8080}:80
+    depends_on:
+      - apache-php
+      - phpmyadmin

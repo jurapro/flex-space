@@ -33,6 +33,7 @@ RUN useradd -m -s /bin/bash -p $(openssl passwd -1 $SSH_PASS) $SSH_USER
 RUN usermod -g $SSH_USER $SSH_USER
 RUN usermod -aG sudo $SSH_USER
 RUN chown -R $SSH_USER.$SSH_USER /var/www
+RUN echo "cd /var/www/html">>/home/$SSH_USER/.bashrc
 
 #Apache configure
 RUN a2enmod rewrite
