@@ -1,3 +1,9 @@
 #!/bin/bash
+
+
+echo "starting services ..."
+
 service ssh start
-chown -R :www-data /var/www/html
+apache2-foreground
+
+echo "...done!"

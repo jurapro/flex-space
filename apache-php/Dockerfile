@@ -17,16 +17,24 @@ RUN apt-get update && apt-get install -y \
     vim \
     unzip \
     git \
-    curl
+    curl 
 
 # Install extensions
-RUN docker-php-ext-install pdo_mysql zip exif pcntl mysqli
+RUN docker-php-ext-install pdo_mysql zip exif pcntl mysqli gd
 
+#Install ssh
 RUN apt-get -y install --fix-missing openssh-server
 
 # Clear cache
 RUN apt-get clean && rm -rf /var/lib/apt/lists/*
 
+#Add user
 RUN useradd -m -s /bin/bash -p $(openssl passwd -1 $SSH_PASS) $SSH_USER
-RUN usermod -g www-data $SSH_USER && usermod -a -G www-data,root root
-CMD chmod 0777 /var/www/docker/start.sh && /var/www/docker/start.sh && apache2-foreground
+RUN usermod -g $SSH_USER $SSH_USER
+RUN usermod -aG sudo $SSH_USER
+RUN chown -R $SSH_USER.$SSH_USER /var/www
+
+#Apache configure
+RUN a2enmod rewrite
+
+ENTRYPOINT chmod 777 /root/start.sh && /root/start.sh

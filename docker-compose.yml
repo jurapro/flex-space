@@ -8,11 +8,14 @@ services:
       args:
         SSH_PASS: ${USER_PASSWORD:-password}
         SSH_USER: ${USER_LOGIN:-login}
+    environment:
+        - APACHE_RUN_USER=${USER_LOGIN:-login}
+        - APACHE_RUN_GROUP=${USER_LOGIN:-login}
     restart: always
     container_name: ${USER_LOGIN:-login}_php
     volumes:
       - ./apache-php/html:/var/www/html
-      - ./apache-php/docker:/var/www/docker
+      - ./apache-php/docker/start.sh:/root/start.sh
       - ./apache-php/docker/sshd_config:/etc/ssh/sshd_config
     ports:
        - ${SSH_PORT:-2222}:22
@@ -45,7 +48,7 @@ services:
     build:
       context: ./proxy
       args:
-        SERVER_NAME: ${SERVER_NAME:-localhost}
+        SERVER_NAME: '${SERVER_NAME:-localhost}:${WEB_PORT:-8080}'
     container_name: ${USER_LOGIN:-container}_proxy
     restart: always
     ports:
