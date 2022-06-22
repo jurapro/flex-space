@@ -8,7 +8,10 @@ services:
       args:
         SSH_PASS: ${USER_PASSWORD:-password}
         SSH_USER: ${USER_LOGIN:-login}
-        YII: ${YII:-false}
+        #YII: ${YII:-false}
+        VUE: ${VUE:-false}
+        #REACT: ${REACT:-false}
+        #ANGULAR: ${ANGULAR:-false}
     environment:
         - APACHE_RUN_USER=${USER_LOGIN:-login}
         - APACHE_RUN_GROUP=${USER_LOGIN:-login}
@@ -23,25 +26,25 @@ services:
        - ${SSH_PORT_M1:-1111}:22
 
   #Базовый образ для веб + php + ssh
-  module2:
-    build:
-      context: apache-php
-      args:
-        SSH_PASS: ${USER_PASSWORD:-password}
-        SSH_USER: ${USER_LOGIN:-login}
-        LARAVEL: ${LARAVEL:-false}
-    environment:
-        - APACHE_RUN_USER=${USER_LOGIN:-login}
-        - APACHE_RUN_GROUP=${USER_LOGIN:-login}
-        - LC_CDPATH=/var/www/html
-    restart: always
-    container_name: ${USER_LOGIN:-login}_m2
-    volumes:
-      - ./data/${USER_LOGIN:-login}_m2:/var/www/html
-      - ./apache-php/start.sh:/root/start.sh
-      - ./apache-php/sshd_config:/etc/ssh/sshd_config
-    ports:
-       - ${SSH_PORT_M2:-2222}:22
+  # module2:
+  #   build:
+  #     context: apache-php
+  #     args:
+  #       SSH_PASS: ${USER_PASSWORD:-password}
+  #       SSH_USER: ${USER_LOGIN:-login}
+  #       LARAVEL: ${LARAVEL:-false}
+  #   environment:
+  #       - APACHE_RUN_USER=${USER_LOGIN:-login}
+  #       - APACHE_RUN_GROUP=${USER_LOGIN:-login}
+  #       - LC_CDPATH=/var/www/html
+  #   restart: always
+  #   container_name: ${USER_LOGIN:-login}_m2
+  #   volumes:
+  #     - ./data/${USER_LOGIN:-login}_m2:/var/www/html
+  #     - ./apache-php/start.sh:/root/start.sh
+  #     - ./apache-php/sshd_config:/etc/ssh/sshd_config
+  #   ports:
+  #      - ${SSH_PORT_M2:-2222}:22
 
   #Образ для базы данных mariadb  
   mariadb:
@@ -80,5 +83,5 @@ services:
       - ${WEB_PORT:-8080}:80
     depends_on:
       - module1
-      - module2
+     # - module2
       - phpmyadmin

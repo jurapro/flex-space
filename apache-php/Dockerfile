@@ -3,6 +3,9 @@ ARG SSH_PASS=password
 ARG SSH_USER=login
 ARG LARAVEL
 ARG YII
+ARG VUE
+ARG REACT
+ARG ANGULAR
 
 # Install dependencies
 RUN apt-get update && apt-get install -y \
@@ -46,6 +49,18 @@ RUN if [ "${LARAVEL}" = "true" ]; then su - $SSH_USER -c "composer global requir
 #install Yii
 RUN if [ "${YII}" = "true" ]; then su - $SSH_USER -c "composer create-project --prefer-dist yiisoft/yii2-app-basic basic" && \
                                cp -a -T /home/${SSH_USER}/basic /var/www/basic-yii; fi
+
+#Install node
+RUN curl -fsSL https://deb.nodesource.com/setup_current.x | bash - && apt-get install -y nodejs
+
+#install Vue
+RUN if [ "${VUE}" = "true" ]; then npm install -g @vue/cli; fi
+
+#install React
+RUN if [ "${REACT}}" = "true" ]; then npm install -g create-react-apppm install -g @vue/cli; fi
+
+#install Angular
+RUN if [ "${ANGULAR}}" = "true" ]; then npm install -g @angular/cli; fi
 
 # Clear cache
 RUN apt-get clean && rm -rf /var/lib/apt/lists/*
