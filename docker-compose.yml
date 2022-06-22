@@ -2,26 +2,46 @@ version: '3.7'
 
 services:
   #Базовый образ для веб + php + ssh
-  apache-php:
+  module1:
     build:
       context: apache-php
       args:
         SSH_PASS: ${USER_PASSWORD:-password}
         SSH_USER: ${USER_LOGIN:-login}
-        LARAVEL: ${LARAVEL:-false}
         YII: ${YII:-false}
     environment:
         - APACHE_RUN_USER=${USER_LOGIN:-login}
         - APACHE_RUN_GROUP=${USER_LOGIN:-login}
         - LC_CDPATH=/var/www/html
     restart: always
-    container_name: ${USER_LOGIN:-login}_php
+    container_name: ${USER_LOGIN:-login}_m1
     volumes:
-      - ./apache-php/html:/var/www/html
-      - ./apache-php/docker/start.sh:/root/start.sh
-      - ./apache-php/docker/sshd_config:/etc/ssh/sshd_config
+      - ./data/${USER_LOGIN:-login}_m1:/var/www/html
+      - ./apache-php/start.sh:/root/start.sh
+      - ./apache-php/sshd_config:/etc/ssh/sshd_config
     ports:
-       - ${SSH_PORT:-2222}:22
+       - ${SSH_PORT_M1:-1111}:22
+
+  #Базовый образ для веб + php + ssh
+  module2:
+    build:
+      context: apache-php
+      args:
+        SSH_PASS: ${USER_PASSWORD:-password}
+        SSH_USER: ${USER_LOGIN:-login}
+        LARAVEL: ${LARAVEL:-false}
+    environment:
+        - APACHE_RUN_USER=${USER_LOGIN:-login}
+        - APACHE_RUN_GROUP=${USER_LOGIN:-login}
+        - LC_CDPATH=/var/www/html
+    restart: always
+    container_name: ${USER_LOGIN:-login}_m2
+    volumes:
+      - ./data/${USER_LOGIN:-login}_m2:/var/www/html
+      - ./apache-php/start.sh:/root/start.sh
+      - ./apache-php/sshd_config:/etc/ssh/sshd_config
+    ports:
+       - ${SSH_PORT_M2:-2222}:22
 
   #Образ для базы данных mariadb  
   mariadb:
@@ -34,7 +54,7 @@ services:
           MYSQL_PASSWORD: ${USER_PASSWORD:-password}
       container_name: ${USER_LOGIN:-container}_mariadb
       volumes:
-          - ./mariadb:/var/lib/mysql
+          - ./data/${USER_LOGIN:-container}_mariadb:/var/lib/mysql
 
   #Образ для phpmyadmin
   phpmyadmin:
@@ -59,5 +79,6 @@ services:
     ports:
       - ${WEB_PORT:-8080}:80
     depends_on:
-      - apache-php
+      - module1
+      - module2
       - phpmyadmin
