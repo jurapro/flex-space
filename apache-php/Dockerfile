@@ -57,7 +57,7 @@ RUN curl -fsSL https://deb.nodesource.com/setup_current.x | bash - && apt-get in
 RUN if [ "${VUE}" = "true" ]; then npm install -g @vue/cli; fi
 
 #install React
-RUN if [ "${REACT}}" = "true" ]; then npm install -g create-react-apppm install -g @vue/cli; fi
+RUN if [ "${REACT}}" = "true" ]; then npm install -g create-react-app; fi
 
 #install Angular
 RUN if [ "${ANGULAR}}" = "true" ]; then npm install -g @angular/cli; fi
