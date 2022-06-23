@@ -57,10 +57,14 @@ RUN curl -fsSL https://deb.nodesource.com/setup_current.x | bash - && apt-get in
 RUN if [ "${VUE}" = "true" ]; then npm install -g @vue/cli; fi
 
 #install React
-RUN if [ "${REACT}}" = "true" ]; then npm install -g create-react-app; fi
+RUN if [ "${REACT}" = "true" ]; then npm install -g create-react-app && \
+                                su - $SSH_USER -c "create-react-app react-project" && \
+                                cp -a -T /home/${SSH_USER}/react-project /var/www/react-project; fi
 
 #install Angular
-RUN if [ "${ANGULAR}}" = "true" ]; then npm install -g @angular/cli; fi
+RUN if [ "${ANGULAR}" = "true" ]; then npm install -g @angular/cli && \
+                                su - $SSH_USER -c "ng new angular-project" && \
+                                cp -a -T /home/${SSH_USER}/angular-project /var/www/angular-project; fi
 
 # Clear cache
 RUN apt-get clean && rm -rf /var/lib/apt/lists/*
