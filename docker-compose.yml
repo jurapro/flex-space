@@ -46,6 +46,25 @@ services:
     ports:
        - ${SSH_PORT_M2:-2222}:22
 
+  #Образ Django
+  module3:
+    build:
+      context: django
+      args:
+        SSH_PASS: ${USER_PASSWORD:-password}
+        SSH_USER: ${USER_LOGIN:-login}
+        DJANGO: ${DJANGO:-false}
+    #command: python /web_django/manage.py runserver 0.0.0.0:8000
+    container_name: ${USER_LOGIN:-login}_m3
+    tty: true
+    volumes:
+      - ./data/${USER_LOGIN:-login}_m3:/web_django
+      - ./django/start.sh:/root/start.sh
+      - ./django/sshd_config:/etc/ssh/sshd_config
+    ports:
+        - ${SSH_PORT_M3:-3333}:22
+        - 8000:8000
+
   #Образ для базы данных mariadb  
   mariadb:
       image: mariadb
