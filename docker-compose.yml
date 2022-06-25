@@ -1,7 +1,7 @@
 version: '3.7'
 
 services:
-  #Базовый образ для веб + php + ssh
+  #Образ для бэка (Yii)
   module1:
     build:
       context: apache-php
@@ -9,9 +9,6 @@ services:
         SSH_PASS: ${USER_PASSWORD:-password}
         SSH_USER: ${USER_LOGIN:-login}
         YII: ${YII:-false}
-        VUE: ${VUE:-false}
-        REACT: ${REACT:-false}
-        ANGULAR: ${ANGULAR:-false}
     environment:
         - APACHE_RUN_USER=${USER_LOGIN:-login}
         - APACHE_RUN_GROUP=${USER_LOGIN:-login}
@@ -25,14 +22,14 @@ services:
     ports:
        - ${SSH_PORT_M1:-1111}:22
   
-  #Образ Laravel
+  #Образ для фронта (VUE)
   module2:
     build:
       context: apache-php
       args:
         SSH_PASS: ${USER_PASSWORD:-password}
         SSH_USER: ${USER_LOGIN:-login}
-        LARAVEL: ${LARAVEL:-false}
+        VUE: ${VUE:-false}
     environment:
         - APACHE_RUN_USER=${USER_LOGIN:-login}
         - APACHE_RUN_GROUP=${USER_LOGIN:-login}
@@ -46,7 +43,7 @@ services:
     ports:
        - ${SSH_PORT_M2:-2222}:22
 
-  #Образ Django
+  #Образ для бэка (Django)
   module3:
     build:
       context: django
@@ -54,7 +51,6 @@ services:
         SSH_PASS: ${USER_PASSWORD:-password}
         SSH_USER: ${USER_LOGIN:-login}
         DJANGO: ${DJANGO:-false}
-    #command: python /web_django/manage.py runserver 0.0.0.0:8000
     container_name: ${USER_LOGIN:-login}_m3
     tty: true
     volumes:
@@ -103,4 +99,5 @@ services:
     depends_on:
       - module1
       - module2
+      - module3
       - phpmyadmin
