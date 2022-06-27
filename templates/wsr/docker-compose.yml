@@ -4,7 +4,7 @@ services:
   #Образ для бэка (Yii)
   module1:
     build:
-      context: ../../images/apache-php
+      context: ./images/apache-php
       args:
         SSH_PASS: ${USER_PASSWORD:-password}
         SSH_USER: ${USER_LOGIN:-login}
@@ -17,15 +17,15 @@ services:
     container_name: ${USER_LOGIN:-login}_m1
     volumes:
       - ./data/${USER_LOGIN:-login}_m1:/var/www/html
-      - ../../images/apache-php/start.sh:/root/start.sh
-      - ../../images/apache-php/sshd_config:/etc/ssh/sshd_config
+      - ./images/apache-php/start.sh:/root/start.sh
+      - ./images/apache-php/sshd_config:/etc/ssh/sshd_config
     ports:
        - ${SSH_PORT_M1:-1111}:22
   
   #Образ для фронта (VUE)
   module2:
     build:
-      context: ../../images/apache-php
+      context: ./images/apache-php
       args:
         SSH_PASS: ${USER_PASSWORD:-password}
         SSH_USER: ${USER_LOGIN:-login}
@@ -38,15 +38,15 @@ services:
     container_name: ${USER_LOGIN:-login}_m2
     volumes:
       - ./data/${USER_LOGIN:-login}_m2:/var/www/html
-      - ../../images/apache-php/start.sh:/root/start.sh
-      - ../../images/apache-php/sshd_config:/etc/ssh/sshd_config
+      - ./images/apache-php/start.sh:/root/start.sh
+      - ./images/apache-php/sshd_config:/etc/ssh/sshd_config
     ports:
        - ${SSH_PORT_M2:-2222}:22
 
   #Образ для бэка (Django)
   module3:
     build:
-      context: ../../images/django
+      context: ./images/django
       args:
         SSH_PASS: ${USER_PASSWORD:-password}
         SSH_USER: ${USER_LOGIN:-login}
@@ -55,11 +55,10 @@ services:
     tty: true
     volumes:
       - ./data/${USER_LOGIN:-login}_m3:/web_django
-      - ../../images/django/start.sh:/root/start.sh
-      - ../../images/django/sshd_config:/etc/ssh/sshd_config
+      - ./images/django/start.sh:/root/start.sh
+      - ./images/django/sshd_config:/etc/ssh/sshd_config
     ports:
         - ${SSH_PORT_M3:-3333}:22
-        - 8000:80
 
   #Образ для базы данных mariadb  
   mariadb:
@@ -70,15 +69,15 @@ services:
           MYSQL_ROOT_PASSWORD: ${USER_DB_PASSWORD:-password}
           MYSQL_USER: ${USER_LOGIN:-login}
           MYSQL_PASSWORD: ${USER_PASSWORD:-password}
-      container_name: ${USER_LOGIN:-container}_mariadb
+      container_name: ${USER_LOGIN:-login}_mariadb
       volumes:
-          - ./data/${USER_LOGIN:-container}_mariadb:/var/lib/mysql
+          - ./data/${USER_LOGIN:-login}_mariadb:/var/lib/mysql
 
   #Образ для phpmyadmin
   phpmyadmin:
       image: phpmyadmin/phpmyadmin
       restart: always
-      container_name: ${USER_LOGIN:-container}_phpmyadmin
+      container_name: ${USER_LOGIN:-login}_phpmyadmin
       environment:
       - PMA_HOST=mariadb
       - PMA_ABSOLUTE_URI=http://localhost:8080/phpmyadmin
@@ -88,11 +87,11 @@ services:
   #Образ для проксирующего сервера
   proxy:
     build:
-      context: ../../images/proxy
+      context: ./images/proxy
       args:
         SERVER_NAME: ${SERVER_NAME:-localhost}
         WEB_PORT: ${WEB_PORT:-8080}
-    container_name: ${USER_LOGIN:-container}_proxy
+    container_name: ${USER_LOGIN:-login}_proxy
     restart: always
     ports:
       - ${WEB_PORT:-8080}:80
