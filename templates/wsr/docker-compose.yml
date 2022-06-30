@@ -100,3 +100,7 @@ services:
       - module2
       - module3
       - phpmyadmin
+      
+networks:
+  default:
+    name: ${USER_LOGIN:-login}_net
