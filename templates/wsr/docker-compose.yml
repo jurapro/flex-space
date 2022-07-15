@@ -8,7 +8,7 @@ services:
       args:
         SSH_PASS: ${USER_PASSWORD:-password}
         SSH_USER: ${USER_LOGIN:-login}
-        YII: ${YII:-false}
+        LARAVEL: ${LARAVEL:-false}
     environment:
         - APACHE_RUN_USER=${USER_LOGIN:-login}
         - APACHE_RUN_GROUP=${USER_LOGIN:-login}
