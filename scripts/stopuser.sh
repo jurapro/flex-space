@@ -2,6 +2,18 @@
 
 APP_DIR="$( cd -- "$( dirname -- "${BASH_SOURCE[0]}")/.." &> /dev/null && pwd )"
 
+if [[ $1 = "all" ]]; then
+   for USER in $(ls $APP_DIR/users/)
+   do
+      if [[ -e $APP_DIR/users/$USER/docker-compose.yml  ]]; then
+         echo ""
+         echo "Stopping user '$APP_DIR/users/$USER'"
+         docker-compose -f $APP_DIR/users/$USER/docker-compose.yml stop
+      fi
+   done
+   exit 0
+fi
+
 for ARGUMENT in "$@"
 do
    KEY=$(echo $ARGUMENT | cut -f1 -d=)

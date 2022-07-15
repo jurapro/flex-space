@@ -2,6 +2,18 @@
 
 APP_DIR="$( cd -- "$( dirname -- "${BASH_SOURCE[0]}")/.." &> /dev/null && pwd )"
 
+if [[ $1 = "all" ]]; then
+   for USER in $(ls $APP_DIR/users/)
+   do
+      if [[ -e $APP_DIR/users/$USER/docker-compose.yml  ]]; then
+         echo ""
+         echo "Starting user '$USER'"
+         docker-compose -f $APP_DIR/users/$USER/docker-compose.yml up -d
+      fi
+   done
+   exit 0
+fi
+
 for ARGUMENT in "$@"
 do
    KEY=$(echo $ARGUMENT | cut -f1 -d=)
@@ -24,5 +36,5 @@ echo "Choose from the following users: "$(ls $APP_DIR/users/) >&2
 exit 1
 fi
 
-echo "Starting user '$APP_DIR/users/$user'"
+echo "Starting user '$user'"
 docker-compose -f $APP_DIR/users/$user/docker-compose.yml up -d

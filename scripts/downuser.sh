@@ -2,15 +2,13 @@
 
 APP_DIR="$( cd -- "$( dirname -- "${BASH_SOURCE[0]}")/.." &> /dev/null && pwd )"
 
-cache=""
-
 if [[ $1 = "all" ]]; then
    for USER in $(ls $APP_DIR/users/)
    do
       if [[ -e $APP_DIR/users/$USER/docker-compose.yml  ]]; then
-       echo ""
-       echo "Building user '$APP_DIR/users/$USER'"
-       docker-compose -f $APP_DIR/users/$USER/docker-compose.yml build $cache
+         echo ""
+         echo "Starting user '$USER'"
+         docker-compose -f $APP_DIR/users/$USER/docker-compose.yml down
       fi
    done
    exit 0
@@ -38,5 +36,5 @@ echo "Choose from the following users: "$(ls $APP_DIR/users/) >&2
 exit 1
 fi
 
-echo "Building user '$APP_DIR/users/$user'"
-docker-compose -f $APP_DIR/users/$user/docker-compose.yml build $cache
+echo "Starting user '$user'"
+docker-compose -f $APP_DIR/users/$user/docker-compose.yml down
