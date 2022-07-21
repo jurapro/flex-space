@@ -7,10 +7,14 @@ cache=""
 if [[ $1 = "all" ]]; then
    for USER in $(ls $APP_DIR/users/)
    do
+      module=""     
+      if [[ $# -eq 2 ]] ; then
+         module="$2"
+      fi   
       if [[ -e $APP_DIR/users/$USER/docker-compose.yml  ]]; then
        echo ""
        echo "Building user '$APP_DIR/users/$USER'"
-       docker-compose -f $APP_DIR/users/$USER/docker-compose.yml build $cache
+       docker-compose -f $APP_DIR/users/$USER/docker-compose.yml build $cache $module
       fi
    done
    exit 0
@@ -39,4 +43,4 @@ exit 1
 fi
 
 echo "Building user '$APP_DIR/users/$user'"
-docker-compose -f $APP_DIR/users/$user/docker-compose.yml build $cache
+docker-compose -f $APP_DIR/users/$user/docker-compose.yml build $cache $module

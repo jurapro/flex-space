@@ -5,10 +5,14 @@ APP_DIR="$( cd -- "$( dirname -- "${BASH_SOURCE[0]}")/.." &> /dev/null && pwd )"
 if [[ $1 = "all" ]]; then
    for USER in $(ls $APP_DIR/users/)
    do
+      module=""     
+      if [[ $# -eq 2 ]] ; then
+         module="$2"
+      fi
       if [[ -e $APP_DIR/users/$USER/docker-compose.yml  ]]; then
          echo ""
          echo "Starting user '$USER'"
-         docker-compose -f $APP_DIR/users/$USER/docker-compose.yml up -d
+         docker-compose -f $APP_DIR/users/$USER/docker-compose.yml up -d $module
       fi
    done
    exit 0
@@ -37,4 +41,4 @@ exit 1
 fi
 
 echo "Starting user '$user'"
-docker-compose -f $APP_DIR/users/$user/docker-compose.yml up -d
+docker-compose -f $APP_DIR/users/$user/docker-compose.yml up -d $module

@@ -5,10 +5,14 @@ APP_DIR="$( cd -- "$( dirname -- "${BASH_SOURCE[0]}")/.." &> /dev/null && pwd )"
 if [[ $1 = "all" ]]; then
    for USER in $(ls $APP_DIR/users/)
    do
+      module=""     
+      if [[ $# -eq 2 ]] ; then
+         module="$2"
+      fi
       if [[ -e $APP_DIR/users/$USER/docker-compose.yml  ]]; then
          echo ""
          echo "Stopping user '$APP_DIR/users/$USER'"
-         docker-compose -f $APP_DIR/users/$USER/docker-compose.yml stop
+         docker-compose -f $APP_DIR/users/$USER/docker-compose.yml stop $module
       fi
    done
    exit 0
@@ -37,4 +41,4 @@ exit 1
 fi
 
 echo "Stopping user '$APP_DIR/users/$user'"
-docker-compose -f $APP_DIR/users/$user/docker-compose.yml stop
+docker-compose -f $APP_DIR/users/$user/docker-compose.yml stop $module
