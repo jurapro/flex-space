@@ -69,3 +69,5 @@ Build the specified container for the specified user
 `./scripts/builduser.sh user=newuser module=module1 cache=--no-cache`
 
 *Note: commands are wrappers for a command 'docker-compose build'*
+
+## Run users workspaces
