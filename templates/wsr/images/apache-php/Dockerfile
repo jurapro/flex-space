@@ -47,7 +47,7 @@ RUN if [ "${LARAVEL}" = "true" ]; then su - $SSH_USER -c "composer global requir
                                 ln -s /home/$SSH_USER/.config/composer/vendor/bin/laravel /usr/local/bin/laravel; fi
 
 #install Yii
-RUN if [ "${YII}" = "true" ]; then su - $SSH_USER -c "composer create-project --prefer-dist yiisoft/yii2-app-basic basic" && \
+RUN if [ "${YII}" = "true" ]; then su - $SSH_USER -c "composer create-project --prefer-dist --stability=dev yiisoft/yii2-app-basic basic" && \
                                cp -a -T /home/${SSH_USER}/basic /var/www/basic-yii; fi
 
 #Install node

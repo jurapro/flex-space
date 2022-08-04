@@ -1,7 +1,7 @@
 version: '3.7'
 
 services:
-  #Образ для бэка (Yii)
+  #Image for backend (Yii, Laravel)
   module1:
     build:
       context: ./images/apache-php
@@ -9,6 +9,7 @@ services:
         SSH_PASS: ${USER_PASSWORD:-password}
         SSH_USER: ${USER_LOGIN:-login}
         LARAVEL: ${LARAVEL:-false}
+        YII: ${YII:-false}
     environment:
         - APACHE_RUN_USER=${USER_LOGIN:-login}
         - APACHE_RUN_GROUP=${USER_LOGIN:-login}
@@ -22,7 +23,7 @@ services:
     ports:
        - ${SSH_PORT_M1:-1111}:22
   
-  #Образ для фронта (VUE)
+  #Image for frontend (VUE)
   module2:
     build:
       context: ./images/apache-php
@@ -43,7 +44,7 @@ services:
     ports:
        - ${SSH_PORT_M2:-2222}:22
 
-  #Образ для бэка (Django)
+  #Image for backend (Django)
   module3:
     build:
       context: ./images/django
@@ -60,7 +61,7 @@ services:
     ports:
         - ${SSH_PORT_M3:-3333}:22
 
-  #Образ для базы данных mariadb  
+  #Image for mariadb  
   mariadb:
       image: mariadb
       restart: always
@@ -73,7 +74,7 @@ services:
       volumes:
           - ./data/${USER_LOGIN:-login}_mariadb:/var/lib/mysql
 
-  #Образ для phpmyadmin
+  #Image for phpmyadmin
   phpmyadmin:
       image: phpmyadmin/phpmyadmin
       restart: always
@@ -84,7 +85,7 @@ services:
       depends_on:
           - mariadb
 
-  #Образ для проксирующего сервера
+  #Image for proxy server
   proxy:
     build:
       context: ./images/proxy

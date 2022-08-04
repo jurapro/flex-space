@@ -44,7 +44,7 @@ Adding a new user with a random username and password using the specified templa
 
 Adding a new user with the specified login and password using the specified template
 
-`/scripts/adduser.sh template=api user=newuser password=12345`
+`./scripts/adduser.sh template=api user=newuser password=12345`
 
 *Note: the order of the parameters does not matter*
 
@@ -141,3 +141,15 @@ Show the specified user's workspace
 `./scripts/psuser.sh user=newuser`
 
 *Note: commands are wrappers for a command 'docker-compose ps'*
+
+## 9. Deleting current users workspaces
+
+Stoping and removes all workspaces from the users directory with users data
+
+`./scripts/deluser.sh all`
+
+Stoping and removes the specified user's workspace with user data
+
+`./scripts/deluser.sh user=newuser`
+
+*Note: commands are wrappers for a command 'docker-compose down'*

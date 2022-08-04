@@ -1,7 +1,7 @@
 version: '3.7'
 
 services:
-  #Образ для бэка (Laravel)
+  #Image for backend (Laravel)
   module1:
     build:
       context: ./images/apache-php
@@ -22,7 +22,7 @@ services:
     ports:
        - ${SSH_PORT_M1:-1111}:22
  
-  #Образ для базы данных mariadb  
+  #Image for mariadb  
   mariadb:
       image: mariadb
       restart: always
@@ -35,7 +35,7 @@ services:
       volumes:
           - ./data/${USER_LOGIN:-login}_mariadb:/var/lib/mysql
 
-  #Образ для phpmyadmin
+  #Image for phpmyadmin
   phpmyadmin:
       image: phpmyadmin/phpmyadmin
       restart: always
@@ -46,7 +46,7 @@ services:
       depends_on:
           - mariadb
 
-  #Образ для проксирующего сервера
+  #Image for proxy server
   proxy:
     build:
       context: ./images/proxy
